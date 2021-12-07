@@ -1,0 +1,8 @@
+{
+  "name": "bootifulmusic-front",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react",
+  "id": "54fd2f0f"
+}
