@@ -12,7 +12,8 @@ import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate } from 'workbox-strategies';
+import { StaleWhileRevalidate, NetworkFirst } from 'workbox-strategies';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response/CacheableResponsePlugin';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -78,3 +79,34 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+registerRoute(
+  // Check to see if the request is a navigation to a new page
+  ({ url }) => url.pathname.match(new RegExp("tracks")),
+  // Use the strategy
+  new StaleWhileRevalidate({
+    // Put all cached files in a cache named 'pages'
+    cacheName: 'tracks',
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  })
+);
+
+registerRoute(
+  // Check to see if the request is a navigation to a new page
+  ({ url }) => url.pathname.match(new RegExp(".*")),
+  // Use the strategy
+  new StaleWhileRevalidate({
+    // Put all cached files in a cache named 'pages'
+    cacheName: 'data',
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  })
+);

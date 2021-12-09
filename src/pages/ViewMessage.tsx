@@ -31,7 +31,7 @@ function ViewMessage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton text="Inbox" defaultHref="/home"></IonBackButton>
+            <IonBackButton text="Tracks" defaultHref="/home"></IonBackButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -43,32 +43,26 @@ function ViewMessage() {
               <IonIcon icon={personCircle} color="primary"></IonIcon>
               <IonLabel className="ion-text-wrap">
                 <h2>
-                  {message.fromName}
+                  {message.name}
                   <span className="date">
-                    <IonNote>{message.date}</IonNote>
+                    <IonNote>{message.released}</IonNote>
                   </span>
                 </h2>
                 <h3>
-                  To: <IonNote>Me</IonNote>
+                  Artist: <IonNote>Unknown</IonNote>
                 </h3>
               </IonLabel>
             </IonItem>
 
             <div className="ion-padding">
-              <h1>{message.subject}</h1>
+              <h1>Length in minutes</h1>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+                {message.length}
               </p>
             </div>
           </>
         ) : (
-          <div>Message not found</div>
+          <div>Track not found</div>
         )}
       </IonContent>
     </IonPage>

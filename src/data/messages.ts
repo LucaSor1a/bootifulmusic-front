@@ -1,62 +1,67 @@
+import { urlsApi } from './urls';
+
 export interface Message {
-  fromName: string;
-  subject: string;
-  date: string;
   id: number;
+  name: string;
+  released: string;
+  length: number;
 }
 
-const messages: Message[] = [
-  {
-    fromName: 'Matt Chorsey',
-    subject: 'New event: Trip to Vegas',
-    date: '9:32 AM',
-    id: 0
-  },
-  {
-    fromName: 'Lauren Ruthford',
-    subject: 'Long time no chat',
-    date: '6:12 AM',
-    id: 1
-  },
-  {
-    fromName: 'Jordan Firth',
-    subject: 'Report Results',
-    date: '4:55 AM',
-    id: 2
+export interface Token{
+  id_token: string  
+}
 
-  },
-  {
-    fromName: 'Bill Thomas',
-    subject: 'The situation',
-    date: 'Yesterday',
-    id: 3
-  },
-  {
-    fromName: 'Joanne Pollan',
-    subject: 'Updated invitation: Swim lessons',
-    date: 'Yesterday',
-    id: 4
-  },
-  {
-    fromName: 'Andrea Cornerston',
-    subject: 'Last minute ask',
-    date: 'Yesterday',
-    id: 5
-  },
-  {
-    fromName: 'Moe Chamont',
-    subject: 'Family Calendar - Version 1',
-    date: 'Last Week',
-    id: 6
-  },
-  {
-    fromName: 'Kelly Richardson',
-    subject: 'Placeholder Headhots',
-    date: 'Last Week',
-    id: 7
+var messages : Message[] | undefined
+
+export const getMessages = async( token : string = "" ) => {
+  messages = await http<Message[]>( "/tracks", token );
+  return messages;
+};
+
+export const getMessage = (id: number) => {
+  return messages?.find(m => m.id === id);
+};
+
+export const logIn = async() =>{
+  try {
+    const url = urlsApi.base + '/authenticate'
+    var userData = {username: "admin", password : "admin", rememberMe: true};
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(userData),
+      headers:{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      }
+    })
+    if (!response.ok) {
+      throw Error(response.statusText)
+    }
+    const token: Token = await response.json();
+    return token.id_token;
+  } catch (error) {
+    console.log("falló")
   }
-];
+}
 
-export const getMessages = () => messages;
-
-export const getMessage = (id: number) => messages.find(m => m.id === id);
+export async function http<T>( request: RequestInfo, token: string ): Promise<T|undefined> {
+  try {
+    const bearer = 'Bearer '+ token;
+    const response = await fetch(urlsApi.base + request, {
+      method: 'GET',
+      headers: {
+        'Content-Type': "application/json",
+        'Authorization': bearer
+        },
+      }    
+    );
+    if (!response.ok) {
+      throw Error(response.statusText)
+    }
+    const body = await response.json();
+    return body;
+  } catch (error) {
+    console.log("falló")
+  }
+  return undefined;
+}

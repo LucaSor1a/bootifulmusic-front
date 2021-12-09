@@ -1,6 +1,6 @@
 import MessageListItem from '../components/MessageListItem';
 import { useState } from 'react';
-import { Message, getMessages } from '../data/messages';
+import { Message, getMessages, logIn } from '../data/messages';
 import {
   IonContent,
   IonHeader,
@@ -14,13 +14,26 @@ import {
 } from '@ionic/react';
 import './Home.css';
 
+var token: string | undefined;
+
 const Home: React.FC = () => {
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  useIonViewWillEnter(() => {
-    const msgs = getMessages();
-    setMessages(msgs);
+  useIonViewWillEnter( async () => {
+    try {
+      token = await logIn();
+    } catch (error) {
+      console.log("No se pudo")
+    }
+    if (token) {
+      var msgs = await getMessages(token);
+    } else {
+      var msgs = await getMessages();
+    }
+    if (msgs) {
+      setMessages(msgs);
+    }
   });
 
   const refresh = (e: CustomEvent) => {
@@ -33,7 +46,7 @@ const Home: React.FC = () => {
     <IonPage id="home-page">
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
+          <IonTitle>Tracks</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -44,7 +57,7 @@ const Home: React.FC = () => {
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">
-              Inbox
+              Tracks
             </IonTitle>
           </IonToolbar>
         </IonHeader>
