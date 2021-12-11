@@ -24,13 +24,9 @@ const Home: React.FC = () => {
     try {
       token = await logIn();
     } catch (error) {
-      console.log("No se pudo")
+      console.log("No se pudo hacer log in")
     }
-    if (token) {
-      var msgs = await getMessages(token);
-    } else {
-      var msgs = await getMessages();
-    }
+    var msgs = await getMessages(token || "");
     if (msgs) {
       setMessages(msgs);
     }

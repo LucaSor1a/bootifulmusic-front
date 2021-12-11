@@ -13,7 +13,7 @@ export interface Token{
 
 var messages : Message[] | undefined
 
-export const getMessages = async( token : string = "" ) => {
+export const getMessages = async( token : string ) => {
   messages = await http<Message[]>( "/tracks", token );
   return messages;
 };
@@ -40,7 +40,7 @@ export const logIn = async() =>{
     const token: Token = await response.json();
     return token.id_token;
   } catch (error) {
-    console.log("falló")
+    console.log("No se pudo obtener un token")
   }
 }
 
@@ -61,7 +61,7 @@ export async function http<T>( request: RequestInfo, token: string ): Promise<T|
     const body = await response.json();
     return body;
   } catch (error) {
-    console.log("falló")
+    console.log("No se pudo hacer la request")
   }
   return undefined;
 }
